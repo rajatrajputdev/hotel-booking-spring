@@ -1,6 +1,6 @@
-package models;
+package net.rajatrajputdev.hotelbooking.models;
 
-import enums.BookingStatus;
+import net.rajatrajputdev.hotelbooking.enums.BookingStatus;
 import jakarta.validation.constraints.*;
 
 import lombok.Data;

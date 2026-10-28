@@ -1,4 +1,4 @@
-package models;
+package net.rajatrajputdev.hotelbooking.models;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

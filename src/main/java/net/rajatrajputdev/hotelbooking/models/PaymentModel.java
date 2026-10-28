@@ -1,9 +1,8 @@
-package models;
+package net.rajatrajputdev.hotelbooking.models;
 
-import enums.PaymentMethod;
-import enums.PaymentStatus;
+import net.rajatrajputdev.hotelbooking.enums.PaymentMethod;
+import net.rajatrajputdev.hotelbooking.enums.PaymentStatus;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

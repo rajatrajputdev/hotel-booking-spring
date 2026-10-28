@@ -1,7 +1,6 @@
-package models;
+package net.rajatrajputdev.hotelbooking.models;
 
-import enums.RoomStatus;
-import jakarta.validation.constraints.Min;
+import net.rajatrajputdev.hotelbooking.enums.RoomStatus;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.NotBlank;

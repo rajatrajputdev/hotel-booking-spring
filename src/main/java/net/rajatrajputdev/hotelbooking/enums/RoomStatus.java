@@ -1,4 +1,4 @@
-package enums;
+package net.rajatrajputdev.hotelbooking.enums;
 
 public enum RoomStatus {
     AVAILABLE,
