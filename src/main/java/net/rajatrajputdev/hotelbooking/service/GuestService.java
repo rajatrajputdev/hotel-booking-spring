@@ -1,7 +1,6 @@
 package net.rajatrajputdev.hotelbooking.service;
 
-import net.rajatrajputdev.hotelbooking.dto.request.CreateGuestRequest;
-import net.rajatrajputdev.hotelbooking.dto.request.UpdateGuestRequest;
+import net.rajatrajputdev.hotelbooking.dto.request.GuestRequest;
 import net.rajatrajputdev.hotelbooking.dto.response.GuestResponse;
 import net.rajatrajputdev.hotelbooking.models.GuestModel;
 import org.bson.types.ObjectId;
@@ -69,7 +68,7 @@ public class GuestService {
         return new ResponseEntity<>("No guest with that ID exists.", HttpStatus.NOT_FOUND);
     }
 
-    public ResponseEntity<GuestResponse> createGuest(CreateGuestRequest request) {
+    public ResponseEntity<GuestResponse> createGuest(GuestRequest request) {
 
         GuestModel guestModel = new GuestModel();
 
@@ -89,7 +88,7 @@ public class GuestService {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    public ResponseEntity<?> updateGuest(UpdateGuestRequest request, ObjectId guest_id) {
+    public ResponseEntity<?> updateGuest(GuestRequest request, ObjectId guest_id) {
 
         GuestModel guest = guestRepository.findById(guest_id).orElse(null);
 
