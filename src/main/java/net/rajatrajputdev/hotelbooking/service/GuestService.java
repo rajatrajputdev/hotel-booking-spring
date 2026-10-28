@@ -1,5 +1,8 @@
 package net.rajatrajputdev.hotelbooking.service;
 
+import net.rajatrajputdev.hotelbooking.dto.request.CreateGuestRequest;
+import net.rajatrajputdev.hotelbooking.dto.request.UpdateGuestRequest;
+import net.rajatrajputdev.hotelbooking.dto.response.GuestResponse;
 import net.rajatrajputdev.hotelbooking.models.GuestModel;
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
@@ -19,18 +22,40 @@ public class GuestService {
         this.guestRepository = guestRepository;
     }
 
+    private GuestResponse toResponse(GuestModel guest) {
+        return new GuestResponse(
+                guest.getGuestId().toHexString(),
+                guest.getName(),
+                guest.getEmail(),
+                guest.getPhone()
+        );
+    }
+
     public ResponseEntity<?> getAllGuests(){
-        List<GuestModel> allGuests = guestRepository.findAll();
-        if(allGuests.isEmpty()){
-            return new ResponseEntity<>("There are no guests staying in the Hotel at the moment.", HttpStatus.OK);
-        }
-        return new ResponseEntity<>(allGuests, HttpStatus.OK);
+        List<GuestResponse> allGuests = guestRepository.findAll()
+                .stream()
+                .map(guest -> new GuestResponse(
+                        guest.getGuestId().toHexString(),
+                        guest.getName(),
+                        guest.getEmail(),
+                        guest.getPhone()
+                ))
+                .toList();
+
+        return ResponseEntity.ok(allGuests);
     }
 
     public ResponseEntity<?> getGuest(ObjectId guest_id){
         Optional<GuestModel> guest = guestRepository.findById(guest_id);
         if(guest.isPresent()){
-            return new ResponseEntity<>(guest, HttpStatus.OK);
+            GuestModel guestModel = guest.get();
+            GuestResponse guestResponse = new GuestResponse(
+                    guestModel.getGuestId().toHexString(),
+                    guestModel.getName(),
+                    guestModel.getEmail(),
+                    guestModel.getPhone()
+            );
+            return new ResponseEntity<>(guestResponse, HttpStatus.OK);
         }
         return new ResponseEntity<>("No guest with that ID exists.", HttpStatus.NOT_FOUND);
     }
@@ -44,20 +69,45 @@ public class GuestService {
         return new ResponseEntity<>("No guest with that ID exists.", HttpStatus.NOT_FOUND);
     }
 
-    public ResponseEntity<?> createGuest(GuestModel guestModel){
-        guestRepository.insert(guestModel);
-        return new ResponseEntity<>("Guest has been created.", HttpStatus.CREATED);
+    public ResponseEntity<GuestResponse> createGuest(CreateGuestRequest request) {
+
+        GuestModel guestModel = new GuestModel();
+
+        guestModel.setName(request.name());
+        guestModel.setEmail(request.email());
+        guestModel.setPhone(request.phone());
+
+        GuestModel savedGuest = guestRepository.insert(guestModel);
+
+        GuestResponse response = new GuestResponse(
+                savedGuest.getGuestId().toHexString(),
+                savedGuest.getName(),
+                savedGuest.getEmail(),
+                savedGuest.getPhone()
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    public ResponseEntity<?> updateGuest(GuestModel guestModel, ObjectId guest_id){
+    public ResponseEntity<?> updateGuest(UpdateGuestRequest request, ObjectId guest_id) {
+
         GuestModel guest = guestRepository.findById(guest_id).orElse(null);
-        if(guest != null){
-            guest.setEmail(guestModel.getEmail());
-            guest.setName(guestModel.getName());
-            guest.setPhone(guestModel.getPhone());
-            guestRepository.save(guest);
-            return new ResponseEntity<>("Guest has been updated.", HttpStatus.OK);
-        }
-        return new ResponseEntity<>("No guest with that ID exists.", HttpStatus.NOT_FOUND);
+
+        if (guest == null) {return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No guest with that ID exists.");}
+
+        guest.setName(request.name());
+        guest.setEmail(request.email());
+        guest.setPhone(request.phone());
+
+        GuestModel updatedGuest = guestRepository.save(guest);
+
+        GuestResponse response = new GuestResponse(
+                updatedGuest.getGuestId().toHexString(),
+                updatedGuest.getName(),
+                updatedGuest.getEmail(),
+                updatedGuest.getPhone()
+        );
+
+        return ResponseEntity.ok(response);
     }
 }
